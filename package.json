@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lyndachiwetelu/node-passport-with-sequelize-and-mysql-example.git"
+    "url": "git+https://github.com/lyndachiwetelu/using-passport-with-sequelize-and-mysql.git"
   },
   "author": "",
   "license": "ISC",
