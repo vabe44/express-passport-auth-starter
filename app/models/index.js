@@ -1,32 +1,46 @@
 "use strict";
 
-var fs        = require("fs");
-var path      = require("path");
+var fs = require("fs");
+var path = require("path");
 var Sequelize = require("sequelize");
-var env       = process.env.NODE_ENV || "development";
-var config    = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
+var env = process.env.NODE_ENV || "development";
+var config = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
-var db        = {};
+var db = {};
+var bCrypt = require('bcrypt-nodejs');
+
+const CLASSMETHODS = 'classMethods';
+const ASSOCIATE = 'associate';
 
 
 fs
-  .readdirSync(__dirname)
-  .filter(function(file) {
-    return (file.indexOf(".") !== 0) && (file !== "index.js");
-  })
-  .forEach(function(file) {
-    var model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+    .readdirSync(__dirname)
+    .filter(function (file) {
+        return (file.indexOf(".") !== 0) && (file !== "index.js");
+    })
+    .forEach(function (file) {
+        var model = sequelize.import(path.join(__dirname, file));
+        db[model.name] = model;
+    });
 
-Object.keys(db).forEach(function(modelName) {
-  if ("associate" in db[modelName]) {
-    db[modelName].associate(db);
-  }
+Object.keys(db).forEach(function (modelName) {
+    if (CLASSMETHODS in db[modelName].options) {
+        if (ASSOCIATE in db[modelName].options[CLASSMETHODS]) {
+            db[modelName].options.classMethods.associate(db);
+        }
+    }
 });
 
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+db.User.comparePassword  = function(candidatePassword) {
+    return bCrypt.compareSync(candidatePassword, this.password);
+};
+
+db.User.generateHash = function (password) {
+    return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null);
+};
 
 module.exports = db;
