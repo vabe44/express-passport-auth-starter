@@ -18,10 +18,6 @@ app.use(passport.session()); // persistent login sessions
 app.set('views', './app/views')
 app.set('view engine', 'ejs');
 
-app.get('/', function(req, res){
-    res.send('Welcome to Passport with Sequelize');
-});
-
 // Models
 var models = require("./app/models");
 
@@ -43,6 +39,9 @@ app.use(function (req, res, next) {
 
 //Routes
 var authRoute = require('./app/routes/auth.js')(app,passport);
+var indexRoute = require('./app/routes/index');
+
+app.use('/', indexRoute);
 
 app.listen(5000, function(err){
     if(!err)
