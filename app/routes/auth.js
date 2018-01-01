@@ -26,16 +26,16 @@ module.exports = function (app, passport) {
     }
     ));
 
+    /* GET login page. */
+    app.get('/dashboard', middlewares.isLoggedIn, function (req, res, next) {
+        res.render('dashboard');
+    });
+
     /* GET logout page. */
     app.get('/logout', function (req, res, next) {
         req.session.destroy(function (err) {
             res.redirect('/');
         });
-    });
-
-    /* GET login page. */
-    app.get('/dashboard', middlewares.isLoggedIn, function (req, res, next) {
-        res.render('dashboard');
     });
 
 }

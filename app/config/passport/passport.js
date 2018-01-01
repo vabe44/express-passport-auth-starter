@@ -1,3 +1,4 @@
+
 var models = require("../../models");
 const Op = models.Sequelize.Op;
 
@@ -50,7 +51,8 @@ module.exports = function (passport, user) {
           var data = {
             email: email,
             password: userPassword,
-            username: req.body.username
+            username: req.body.username,
+            role: 'user'
           };
 
           User.create(data).then(function (newUser, created) {
